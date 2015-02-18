@@ -64,3 +64,8 @@ openssl x509 -noout -modulus -in ./certs/server/my-server.crt.pem | openssl md5
 openssl rsa -noout -modulus -in ./certs/server/my-server.key.pem | openssl md5
 openssl req -noout -modulus -in ./certs/tmp/my-server.csr.pem | openssl md5
 ```
+
+### Convert to a different format
+
+If you need `.der`/`.cer` or `.pfx/.p12` you can use the commands seen here:
+<https://www.sslshopper.com/ssl-converter.html>
