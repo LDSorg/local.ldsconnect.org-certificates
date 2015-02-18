@@ -1,0 +1,58 @@
+All credit to <https://www.sslshopper.com/ssl-converter.html>, I just wanted to make a local backup of their
+page in case they ever remove it from their site. It's the best resource I've ever seen for converting certs!
+
+
+PEM Format
+The PEM format is the most common format that Certificate Authorities issue certificates in. PEM certificates usually have extentions such as .pem, .crt, .cer, and .key. They are Base64 encoded ASCII files and contain "-----BEGIN CERTIFICATE-----" and "-----END CERTIFICATE-----" statements. Server certificates, intermediate certificates, and private keys can all be put into the PEM format.
+
+Apache and other similar servers use PEM format certificates. Several PEM certificates, and even the private key, can be included in one file, one below the other, but most platforms, such as Apache, expect the certificates and private key to be in separate files.
+
+DER Format
+The DER format is simply a binary form of a certificate instead of the ASCII PEM format. It sometimes has a file extension of .der but it often has a file extension of .cer so the only way to tell the difference between a DER .cer file and a PEM .cer file is to open it in a text editor and look for the BEGIN/END statements. All types of certificates and private keys can be encoded in DER format. DER is typically used with Java platforms. The SSL Converter can only convert certificates to DER format. If you need to convert a private key to DER, please use the OpenSSL commands on this page.
+
+PKCS#7/P7B Format
+The PKCS#7 or P7B format is usually stored in Base64 ASCII format and has a file extention of .p7b or .p7c. P7B certificates contain "-----BEGIN PKCS7-----" and "-----END PKCS7-----" statements. A P7B file only contains certificates and chain certificates, not the private key. Several platforms support P7B files including Microsoft Windows and Java Tomcat.
+
+PKCS#12/PFX Format
+The PKCS#12 or PFX format is a binary format for storing the server certificate, any intermediate certificates, and the private key in one encryptable file. PFX files usually have extensions such as .pfx and .p12. PFX files are typically used on Windows machines to import and export certificates and private keys.
+
+When converting a PFX file to PEM format, OpenSSL will put all the certificates and the private key into a single file. You will need to open the file in a text editor and copy each certificate and private key (including the BEGIN/END statments) to its own individual text file and save them as certificate.cer, CACert.cer, and privateKey.key respectively.
+
+OpenSSL Commands to Convert SSL Certificates on Your Machine
+It is highly recommended that you convert to and from .pfx files on your own machine using OpenSSL so you can keep the private key there. Use the following OpenSSL commands to convert SSL certificate to different formats on your own machine:
+
+OpenSSL Convert PEM
+Convert PEM to DER
+
+openssl x509 -outform der -in certificate.pem -out certificate.der
+
+Convert PEM to P7B
+
+openssl crl2pkcs7 -nocrl -certfile certificate.cer -out certificate.p7b -certfile CACert.cer
+
+Convert PEM to PFX
+
+openssl pkcs12 -export -out certificate.pfx -inkey privateKey.key -in certificate.crt -certfile CACert.crt
+
+OpenSSL Convert DER
+Convert DER to PEM
+
+openssl x509 -inform der -in certificate.cer -out certificate.pem
+
+OpenSSL Convert P7B
+Convert P7B to PEM
+
+openssl pkcs7 -print_certs -in certificate.p7b -out certificate.cer
+
+Convert P7B to PFX
+
+openssl pkcs7 -print_certs -in certificate.p7b -out certificate.cer
+
+openssl pkcs12 -export -in certificate.cer -inkey privateKey.key -out certificate.pfx -certfile CACert.cer
+
+OpenSSL Convert PFX
+Convert PFX to PEM
+
+openssl pkcs12 -in certificate.pfx -out certificate.cer -nodes
+
+If you need to convert a Java Keystore file to a different format, it usually easier to create a new private key and certificates but it is possible to convert a Java Keystore to PEM format.
